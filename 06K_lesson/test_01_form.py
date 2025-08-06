@@ -6,11 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class TestFormSubmission:
     @pytest.fixture(scope="class")
-    def setup(self):
-        self.driver = webdriver.Edge()  
-        self.driver.get("https://bonigarcia.dev/selenium-webdriver-java/data-types.html")
+    def setup(self, request):
+        driver = webdriver.Edge()
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/data-types.html")
+        request.cls.driver = driver  
         yield
-        self.driver.quit()
+        driver.quit()
 
     def test_form_submission(self, setup):
         # Заполнение формы
@@ -19,16 +20,15 @@ class TestFormSubmission:
         self.driver.find_element(By.NAME, "address").send_keys("Ленина, 55-3")
         self.driver.find_element(By.NAME, "email").send_keys("test@skypro.com")
         self.driver.find_element(By.NAME, "phone").send_keys("+7985899998787")
-        self.driver.find_element(By.NAME, "zipcode").send_keys("")  # Оставляем пустым
+        self.driver.find_element(By.NAME, "zipcode").send_keys("") 
         self.driver.find_element(By.NAME, "city").send_keys("Москва")
         self.driver.find_element(By.NAME, "country").send_keys("Россия")
         self.driver.find_element(By.NAME, "job").send_keys("QA")
         self.driver.find_element(By.NAME, "company").send_keys("SkyPro")
 
-        # Нажимаем кнопку Submit
+        # Кнопка Submit
         self.driver.find_element(By.XPATH, "//button[text()='Submit']").click()
 
-       # Ожидание, пока поля будут видимыми и проверяем их цвет
         WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.NAME, "firstname"))
         )
@@ -57,7 +57,6 @@ class TestFormSubmission:
             EC.visibility_of_element_located((By.NAME, "company"))
         )
 
-        # Цвета полей
         zip_code_field = self.driver.find_element(By.NAME, "zipcode")
         assert "red" in zip_code_field.get_attribute("style"), "Zip code field is not highlighted in red"
 
