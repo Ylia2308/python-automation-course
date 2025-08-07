@@ -13,53 +13,33 @@ class TestFormSubmission:
         yield
         driver.quit()
 
+    def wait_for_element(self, by, value):
+        return WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((by, value))
+        )
+
     def test_form_submission(self, setup):
-        # Заполнение формы
-        self.driver.find_element(By.NAME, "firstname").send_keys("Иван")
-        self.driver.find_element(By.NAME, "lastname").send_keys("Петров")
-        self.driver.find_element(By.NAME, "address").send_keys("Ленина, 55-3")
-        self.driver.find_element(By.NAME, "email").send_keys("test@skypro.com")
-        self.driver.find_element(By.NAME, "phone").send_keys("+7985899998787")
-        self.driver.find_element(By.NAME, "zipcode").send_keys("") 
-        self.driver.find_element(By.NAME, "city").send_keys("Москва")
-        self.driver.find_element(By.NAME, "country").send_keys("Россия")
-        self.driver.find_element(By.NAME, "job").send_keys("QA")
-        self.driver.find_element(By.NAME, "company").send_keys("SkyPro")
+        self.wait_for_element(By.NAME, "firstname").send_keys("Иван")
+        self.wait_for_element(By.NAME, "lastname").send_keys("Петров")
+        self.wait_for_element(By.NAME, "address").send_keys("Ленина, 55-3")
+        self.wait_for_element(By.NAME, "email").send_keys("test@skypro.com")
+        self.wait_for_element(By.NAME, "phone").send_keys("+7985899998787")
+        self.wait_for_element(By.NAME, "zipcode").send_keys("") 
+        self.wait_for_element(By.NAME, "city").send_keys("Москва")
+        self.wait_for_element(By.NAME, "country").send_keys("Россия")
+        self.wait_for_element(By.NAME, "job").send_keys("QA")
+        self.wait_for_element(By.NAME, "company").send_keys("SkyPro")
 
-        # Кнопка Submit
-        self.driver.find_element(By.XPATH, "//button[text()='Submit']").click()
+        self.wait_for_element(By.XPATH, "//button[text()='Submit']").click()
 
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "firstname"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "lastname"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "address"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "email"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "phone"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "city"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "country"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "job"))
-        )
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "company"))
-        )
+        
+        fields_to_check = [
+            "firstname", "lastname", "address", "email", "phone", "city", "country", "job", "company"
+        ]
 
-        zip_code_field = self.driver.find_element(By.NAME, "zipcode")
-        assert "red" in zip_code_field.get_attribute("style"), "Zip code field is not highlighted in red"
-
-        for field_name in ["firstname", "lastname", "address", "email", "phone", "city", "country", "job", "company"]:
-            field = self.driver.find_element(By.NAME, field_name)
+        for field_name in fields_to_check:
+            field = self.wait_for_element(By.NAME, field_name)
             assert "green" in field.get_attribute("style"), f"{field_name} field is not highlighted in green"
+
+        zip_code_field = self.wait_for_element(By.NAME, "zipcode")
+        assert "red" in zip_code_field.get_attribute("style"), "Zip code field is not highlighted in red"
