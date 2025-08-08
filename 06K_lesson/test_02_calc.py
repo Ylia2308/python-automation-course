@@ -18,7 +18,8 @@ class TestSlowCalculator:
         delay_input.send_keys(delay)
 
     def click_button(self, driver, value):
-        button = driver.find_element(By.CSS_SELECTOR, f"button[value='{value}']")
+        # Изменяем селектор для поиска кнопок
+        button = driver.find_element(By.XPATH, f"//span[text()='{value}']")
         button.click()
 
     def test_calculator_result(self, setup):
@@ -27,16 +28,14 @@ class TestSlowCalculator:
         self.input_delay(driver, delay_value)
 
         # Нажимаем кнопки
-        self.click_button(driver, '7')
-        self.click_button(driver, '+')
-        self.click_button(driver, '8')
-        self.click_button(driver, '=')
+        self.click_button(driver, '7')  # Нажимаем кнопку '7'
+        self.click_button(driver, '+')   # Нажимаем кнопку '+'
+        self.click_button(driver, '8')   # Нажимаем кнопку '8'
+        self.click_button(driver, '=')    # Нажимаем кнопку '='
 
-        # Ожидание
-        result_element = WebDriverWait(driver, 60).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "#result"))
+        WebDriverWait(driver, 10).until(
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, ".screen"), "15")
         )
 
         # Проверяем, что результат равен 15
         assert result_element.text == "15", f"Expected result to be '15', but got '{result_element.text}'"
-
