@@ -4,12 +4,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-class TestSlowCalculator:
+
+class TestSlowCalculator: 
     @pytest.fixture(scope="class")
     def setup(self):
         driver = webdriver.Chrome()
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/slow-calculator.html")
-        yield driver 
+        yield driver
         driver.quit()
 
     def input_delay(self, driver, delay):
@@ -23,7 +24,7 @@ class TestSlowCalculator:
         button.click()
 
     def test_calculator_result(self, setup):
-        driver = setup  
+        driver = setup
         delay_value = "45"
         self.input_delay(driver, delay_value)
 
@@ -33,9 +34,9 @@ class TestSlowCalculator:
         self.click_button(driver, '8')   # Нажимаем кнопку '8'
         self.click_button(driver, '=')    # Нажимаем кнопку '='
 
-        WebDriverWait(driver, 10).until(
-            EC.text_to_be_present_in_element((By.CSS_SELECTOR, ".screen"), "15")
-        )
+        WebDriverWait(driver, 60).until(
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, "screen"), "15")
+            )
 
         # Проверяем, что результат равен 15
-        assert result_element.text == "15", f"Expected result to be '15', but got '{result_element.text}'"
+        assert "screen" == "15", f"Ожидалось, что результат будет '15', но получено '{"screen"}'"
